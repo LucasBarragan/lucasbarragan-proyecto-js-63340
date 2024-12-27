@@ -1,52 +1,40 @@
-let nombreAlumno1 = "";
-let notaAlumno1 = 0;
-
-let nombreAlumno2 = "";
-let notaAlumno2 = 0;
-
-function agregarAlumno1() {
-  let nombreAlumno = prompt("Ingrese el nombre del primer alumno:");
-  while (nombreAlumno === "") {
-    nombreAlumno = prompt("Por favor, ingrese un nombre válido:");
-  }
-  
-  let notaAlumno = prompt("Ingrese la nota del primer alumno:");
-  while (notaAlumno === "" || notaAlumno <= 0 || notaAlumno >= 11) {
-    notaAlumno = prompt("Por favor, ingrese una nota válida (entre 1 y 10):");
-  }
-  
-  nombreAlumno1 = nombreAlumno;
-  notaAlumno1 = parseInt(notaAlumno);
+const Producto = function(nombre, precio, color){
+  this.nombre = nombre
+  this.precio = precio
+  this.color = color
 }
 
-function agregarAlumno2() {
-  let nombreAlumno = prompt("Ingrese el nombre del segundo alumno:");
-  while (nombreAlumno === "") {
-    nombreAlumno = prompt("Por favor, ingrese un nombre válido:");
+let producto1 = new Producto("remera", 15000, "azul")
+let producto2 = new Producto("pantalon", 7000, "negro")
+let producto3 = new Producto("medias", 3000, "blancas")
+let producto4 = new Producto("boxer", 15000, "gris")
+let producto5 = new Producto("gorra", 15000, "verde")
+
+let lista = [producto1, producto2, producto3, producto4, producto5,]
+
+function filtrarProducto(){
+  let palabraClave = prompt("Ingresa tu producto")
+  let resultado = lista.filter( (x)=>x.nombre.toUppercase().includes(palabraClave))
+  
+  if(resultado.length > 0){
+    console.table(resultado)
+  }else{
+    alert("No se encontro el resultado")
   }
-  
-  let notaAlumno = prompt("Ingrese la nota del segundo alumno:");
-  while (notaAlumno === "" || notaAlumno <= 0 || notaAlumno >= 11) {
-    notaAlumno = prompt("Por favor, ingrese una nota válida (entre 1 y 10):");
-  }
-  
-  nombreAlumno2 = nombreAlumno;
-  notaAlumno2 = parseInt(notaAlumno);
 }
 
-function calcularNotaFinal() {
-  let notaFinal = (notaAlumno1 + notaAlumno2) / 2;
-  return notaFinal;
+function agregarProducto(){
+
+  let nombre = prompt("Que producto buscas? (remera-pantalon-medias-boxer-gorra)")
+  let precio = prompt("Ingresa el monto del producto")
+  let color = prompt("Ingresar el color del producto")
+
+if(isNaN(precio) || color == "" || nombre ==""){
+  alert("Verifique que los valores ingresados sean correctos")
+  return
 }
 
-function mostrarResultados() {
-  let notaFinal = calcularNotaFinal();
-  
-  console.log("Nota final promedio: " + notaFinal);
-  console.log(nombreAlumno1 + ": " + notaAlumno1);
-  console.log(nombreAlumno2 + ": " + notaAlumno2);
+let producto = new Producto(nombre, color, precio)
+lista.push(producto)
+console.log(lista)
 }
-
-agregarAlumno1();
-agregarAlumno2();
-mostrarResultados();
