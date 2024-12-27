@@ -38,3 +38,4 @@ let producto = new Producto(nombre, color, precio)
 lista.push(producto)
 console.log(lista)
 }
+agregarProducto()
