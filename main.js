@@ -1,41 +1,96 @@
-const Producto = function(nombre, precio, color){
-  this.nombre = nombre
-  this.precio = precio
-  this.color = color
-}
-
-let producto1 = new Producto("remera", 15000, "azul")
-let producto2 = new Producto("pantalon", 7000, "negro")
-let producto3 = new Producto("medias", 3000, "blancas")
-let producto4 = new Producto("boxer", 15000, "gris")
-let producto5 = new Producto("gorra", 15000, "verde")
-
-let lista = [producto1, producto2, producto3, producto4, producto5,]
-
-function filtrarProducto(){
-  let palabraClave = prompt("Ingresa tu producto")
-  let resultado = lista.filter( (x)=>x.nombre.toUppercase().includes(palabraClave))
-  
-  if(resultado.length > 0){
-    console.table(resultado)
-  }else{
-    alert("No se encontro el resultado")
+class Producto {
+  constructor(nombre, precio, color) {
+    this.nombre = nombre;
+    this.precio = precio;
+    this.color = color;
   }
 }
 
-function agregarProducto(){
+/* lista de productos */
+let lista = [
+  new Producto("remera", 15000, "azul"),
+  new Producto("pantalon", 7000, "negro"),
+  new Producto("medias", 3000, "blancas"),
+];
 
-  let nombre = prompt("Que producto buscas? (remera-pantalon-medias-boxer-gorra)")
-  let precio = prompt("Ingresa el monto del producto")
-  let color = prompt("Ingresar el color del producto")
-
-if(isNaN(precio) || color == "" || nombre ==""){
-  alert("Verifique que los valores ingresados sean correctos")
-  return
+/* guarda y carga los datos del local storage */
+function guardarEnStorage() {
+  localStorage.setItem("productos", JSON.stringify(lista));
 }
 
-let producto = new Producto(nombre, color, precio)
-lista.push(producto)
-console.log(lista)
+function cargarDesdeStorage() {
+  const productosGuardados = localStorage.getItem("productos");
+  if (productosGuardados) {
+    const productosParseados = JSON.parse(productosGuardados);
+    lista = [];
+    for (const prod of productosParseados) {
+      lista.push(new Producto(prod.nombre, prod.precio, prod.color));
+    }
+  }
 }
-agregarProducto()
+
+/* muestra los productos */
+function mostrarProductos() {
+  const contenedor = document.getElementById("productos");
+  contenedor.innerHTML = "";
+  lista.forEach((producto, index) => {
+    contenedor.innerHTML += `
+      <div>
+        <h3>${producto.nombre}</h3>
+        <p>Precio: $${producto.precio}</p>
+        <p>Color: ${producto.color}</p>
+        <button onclick="eliminarProducto(${index})">Eliminar</button>
+      </div>
+    `;
+  });
+}
+
+/* filtro */
+function filtrarProducto() {
+  const palabraClave = document.getElementById("busqueda").value.toLowerCase();
+  const resultados = lista.filter(producto => producto.nombre.toLowerCase().includes(palabraClave));
+  const contenedor = document.getElementById("productos");
+  contenedor.innerHTML = "";
+  if (resultados.length > 0) {
+    resultados.forEach(producto => {
+      contenedor.innerHTML += `
+        <div>
+          <h3>${producto.nombre}</h3>
+          <p>Precio: $${producto.precio}</p>
+          <p>Color: ${producto.color}</p>
+        </div>
+      `;
+    });
+  } else {
+    contenedor.innerHTML = "<p>No se encontraron resultados.</p>";
+  }
+}
+
+/* agrega producto */
+function agregarProducto() {
+  const nombre = document.getElementById("nombre").value;
+  const precio = parseFloat(document.getElementById("precio").value);
+  const color = document.getElementById("color").value;
+
+  if (nombre && !isNaN(precio) && color) {
+    lista.push(new Producto(nombre, precio, color));
+    guardarEnStorage();
+    mostrarProductos();
+    document.getElementById("form-producto").reset();
+  } else {
+    alert("Por favor, complete todos los campos correctamente.");
+  }
+}
+
+/* elimina producto */
+function eliminarProducto(index) {
+  lista.splice(index, 1);
+  guardarEnStorage();
+  mostrarProductos();
+}
+
+/* eventos */
+cargarDesdeStorage();
+mostrarProductos();
+document.getElementById("btn-agregar").onclick = agregarProducto;
+document.getElementById("btn-filtrar").onclick = filtrarProducto;
